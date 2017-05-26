@@ -1,14 +1,10 @@
 var nodeExternals = require('webpack-node-externals');
 
-module.export = {
-  target: 'node',
+module.exports = {
+  output: {
+    devtoolModuleFilenameTemplate: '[absolute-resource-path]',
+    devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
+  },
   externals: [nodeExternals()],
-  module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        loader: "babel-loader"
-      }
-    ]
-  }
+  devtool: "cheap-module-source-map"
 };
