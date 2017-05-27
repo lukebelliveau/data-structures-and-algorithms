@@ -36,43 +36,70 @@ describe('BinaryTree', () => {
     tree = new BinaryTree();
   })
 
-  it('should insert at the root if tree is empty', () => {
-    const node = new TreeNode('parent');
+  describe('insertion', () => {
+    it('should insert at the root if tree is empty', () => {
+      const node = new TreeNode('parent');
 
-    tree.insert(node);
+      tree.insert(node);
 
-    expect(tree.root).to.eql(node);
+      expect(tree.root).to.eql(node);
+    });
+
+    it('should insert lesser children to the left of the parent', () => {
+      const parentNode = new TreeNode(2);
+      const leftNode = new TreeNode(1);
+
+      tree.insert(parentNode);
+      tree.insert(leftNode);
+
+      expect(parentNode.leftChild).to.eql(leftNode);
+    });
+
+    it('should insert greater children to the right of the parent', () => {
+      const parentNode = new TreeNode(1);
+      const rightNode = new TreeNode(2);
+
+      tree.insert(parentNode);
+      tree.insert(rightNode);
+
+      expect(parentNode.rightChild).to.eql(rightNode);
+    });
+
+    it('should recursively add children', () => {
+      const threeNode = new TreeNode(3);
+      const oneNode = new TreeNode(1);
+      const twoNode = new TreeNode(2);
+
+      tree.insert(threeNode);
+      tree.insert(oneNode);
+      tree.insert(twoNode);
+
+      expect(oneNode.rightChild).to.eql(twoNode);
+    });
   });
 
-  it('should insert lesser children to the left of the parent', () => {
-    const parentNode = new TreeNode(2);
-    const leftNode = new TreeNode(1);
+  describe('inorder traversal', () => {
+    /*
+              4
+            /   \
+           2     6
+          / \   / \
+         1  3  5  7
 
-    tree.insert(parentNode);
-    tree.insert(leftNode);
+   inorder: 1 2 3 4 5 6 7
+    */
 
-    expect(parentNode.leftChild).to.eql(leftNode);
-  });
+    it('should return a string with the correct order', () => {
+      const valuesToInsert = [4, 2, 1, 3, 6, 5, 7];
 
-  it('should insert greater children to the right of the parent', () => {
-    const parentNode = new TreeNode(1);
-    const rightNode = new TreeNode(2);
+      valuesToInsert.forEach(value => {
+        tree.insert(new TreeNode(value));
+      })
 
-    tree.insert(parentNode);
-    tree.insert(rightNode);
+      const inOrder = tree.getInOrderString();
 
-    expect(parentNode.rightChild).to.eql(rightNode);
-  });
+      expect(inOrder).to.equal('1 2 3 4 5 6 7');
+    })
 
-  it('should recursively add children', () => {
-    const threeNode = new TreeNode(3);
-    const oneNode = new TreeNode(1);
-    const twoNode = new TreeNode(2);
-
-    tree.insert(threeNode);
-    tree.insert(oneNode);
-    tree.insert(twoNode);
-
-    expect(oneNode.rightChild).to.eql(twoNode);
-  });
+  })
 });

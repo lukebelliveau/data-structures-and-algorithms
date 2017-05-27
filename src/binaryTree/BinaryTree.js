@@ -20,16 +20,40 @@ export default class BinaryTree {
   };
 
   insert(node, parentNode = this.root) {
-    if(this.root === null) this.root = node;
+    if(this.root === null) {
+      this.root = node;
+      return;
+    }
 
     else if(node.data < parentNode.data) {
-      if(parentNode.leftChild === null) parentNode.leftChild = node;
-      else this.insert(node, parentNode.leftChild);
+      parentNode.leftChild === null ?
+        parentNode.leftChild = node :
+        this.insert(node, parentNode.leftChild);
     } else {
-      if(parentNode.rightChild === null) parentNode.rightChild = node;
-      else this.insert(node, parentNode.rightChild);
+      parentNode.rightChild === null ?
+        parentNode.rightChild = node :
+        this.insert(node, parentNode.rightChild);
     }
   };
+
+  inOrder(node, callback) {
+    if(node.leftChild) this.inOrder(node.leftChild, callback);
+
+    callback(node);
+
+    if(node.rightChild) this.inOrder(node.rightChild, callback);
+  }
+
+  getInOrderString() {
+    let traversalString = '';
+
+    this.inOrder(this.root, (node) => {
+      traversalString += node.data + ' ';
+    });
+
+    return traversalString.slice(0, traversalString.length - 1);
+  }
+
 }
 
 // export default BinaryTree;
