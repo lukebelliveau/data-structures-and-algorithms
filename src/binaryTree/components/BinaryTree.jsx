@@ -7,9 +7,13 @@ const LEFT = 'left';
 const RIGHT = 'right';
 
 const style = {
-  div: {
-    height: '400px',
-    width: '400px',
+  container: {
+    height: '500px',
+    width: '800px'
+  },
+  tree: {
+    height: '80%',
+    width: '100%',
   },
 };
 
@@ -67,7 +71,7 @@ const Subtree = ({ node, leftBound, rightBound, parentCenter }) => {
 const NodeInput = ({ enteredValue, onInputChange, onButtonClick }) => {
   const buttonText = enteredValue === '' ?
     `Enter some text to create a node!` :
-    `Click here to create a node with ${ typeof enteredValue } ${ enteredValue }`
+    `Click here to create a node with ${ typeof enteredValue } ${ enteredValue }`;
 
   return (
     <div>
@@ -77,16 +81,31 @@ const NodeInput = ({ enteredValue, onInputChange, onButtonClick }) => {
   )
 };
 
+const NodeButtons = ({ nodeValues, onClick }) => {
+  let interval = 100 / nodeValues.length;
+  let currentX = 0 - interval + radius;
+
+  return (
+    <svg viewBox="0 0 100 100">
+      {
+        nodeValues.map(value => <Node onClick={ onClick } node={ new TreeNode(value) } x={ currentX += interval } y={ 10 } key={ value }/>)
+      }
+    </svg>
+  )
+};
+
 class BinaryTree extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       enteredValue: '',
       tree: new BinaryTreeDataStructure(),
+      nodeValues: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     };
 
     this.changeEnteredValue = this.changeEnteredValue.bind(this);
-    this.createNode = this.createNode.bind(this);
+    this.createNodeFromButton = this.createNodeFromButton.bind(this);
+    this.createNodeFromInput = this.createNodeFromInput.bind(this);
   };
 
   changeEnteredValue(event) {
@@ -95,18 +114,31 @@ class BinaryTree extends React.Component {
     this.setState(() => ({enteredValue: value}))
   };
 
-  createNode() {
+  createNodeFromInput() {
+    //EW
     this.state.tree.insert(new TreeNode(this.state.enteredValue));
-    this.setState(() => ({enteredValue: ''}))
+    this.setState((prevState) => ({
+      tree: prevState.tree
+    }));
+  }
+
+  createNodeFromButton(value) {
+    this.state.tree.insert(new TreeNode(value));
+    this.setState((prevState) => ({
+      nodeValues: prevState.nodeValues.filter(item => item !== value)
+    }))
   };
 
   render() {
     return (
-      <div style={ style.div }>
-        <svg viewBox="0 0 100 100">
-          <Subtree node={ this.state.tree.root } leftBound={ 0 } rightBound={ 100 } parentY={ -5 }/>
-        </svg>
-        <NodeInput enteredValue={ this.state.enteredValue } onInputChange={ this.changeEnteredValue } onButtonClick={ this.createNode }/>
+      <div style={ style.container }>
+        <NodeInput enteredValue={ this.state.enteredValue } onInputChange={ this.changeEnteredValue } onButtonClick={ this.createNodeFromInput } />
+        <div style={ style.tree }>
+          <svg viewBox="0 0 100 100">
+            <Subtree node={ this.state.tree.root } leftBound={ 0 } rightBound={ 100 } parentY={ -5 }/>
+          </svg>
+        </div>
+        <NodeButtons nodeValues={ this.state.nodeValues } onClick={ this.createNodeFromButton } style={{ height: '20%', width:'100%' }}/>
       </div>
     )
   }

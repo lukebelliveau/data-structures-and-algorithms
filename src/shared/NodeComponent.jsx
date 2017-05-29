@@ -13,8 +13,8 @@ const style = {
 
 export const radius = 5;
 
-const NodeComponent = ({ node, x, y }) => (
-  <svg>
+const NodeComponent = ({ node, x, y, onClick }) => (
+  <svg onClick={ () => onClick(node.data) }>
     <circle cx={ x } cy={ y } r={radius} style={ style.circle }>
     </circle>
     <text x={ x } y={ y + 2 } textAnchor="middle" style={ style.text }>
