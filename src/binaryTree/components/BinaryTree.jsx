@@ -3,6 +3,9 @@ import React from 'react';
 import Node, { radius } from '../../shared/NodeComponent'
 import BinaryTreeDataStructure, { TreeNode } from '../BinaryTreeDataStructure';
 
+const LEFT = 'left';
+const RIGHT = 'right';
+
 const style = {
   div: {
     height: '400px',
@@ -14,31 +17,49 @@ const getCenter = (lowerBound, upperBound) => {
   return (upperBound-lowerBound)/2 + lowerBound
 };
 
-const getNextYPosition = (parentCenter) => (parentCenter ? parentCenter.y : 0) + (radius * 4);
+const getNextYPosition = (parentCenter) => (parentCenter ? parentCenter.y : 0) + (radius * 2);
 
-const RecursiveNodes = ({ node, leftBound, rightBound, parentCenter }) => {
+const RecursiveChild = ({ node, parentX, parentY, childLeftbound, childRightbound, direction }) => {
   if (!node) return null;
 
-  const x = getCenter(leftBound, rightBound);
-  const y = getNextYPosition(parentCenter);
-  const leftChildren = node.leftChild ?
-    [
-      <line x1={ x - radius } y1={ y } x2={ getCenter(leftBound, x) } y2={ getNextYPosition({x, y}) } strokeWidth="1" stroke="black" key="line" />,
-      <RecursiveNodes node={ node.leftChild } leftBound={ leftBound } rightBound={ x } parentCenter={{ x, y }} key={ node.data } />,
-    ]
-    : null;
-  const rightChildren = node.rightChild ?
-    [
-      <line x1={ x + radius } y1={ y } x2={ getCenter(x, rightBound) } y2={ getNextYPosition({x, y}) } strokeWidth="1" stroke="black" key="line" />,
-      <RecursiveNodes node={ node.rightChild } leftBound={ x } rightBound={ rightBound } parentCenter={{ x, y }} key={ node.data } />
-    ]
-    : null;
+  const x1 = (direction === LEFT ?
+    parentX - radius :
+    parentX + radius
+  );
+
+  const x2 = direction === LEFT ? getCenter(childLeftbound, parentX) : getCenter(parentX, childRightbound);
+  const y2 = getNextYPosition({ x: parentX, y: parentY });
 
   return (
     <svg>
-      <Node x={ x } y={ y } leftBound={ leftBound } rightBound={ rightBound } node={ node }/>
-      { leftChildren }
-      { rightChildren }
+      <line x1={ x1 } y1={ parentY } x2={ x2 } y2={ y2 } strokeWidth="1" stroke="black" key="line" />
+      <Subtree node={ node } leftBound={ childLeftbound } rightBound={ childRightbound } parentCenter={{ x: parentX, y: parentY }}/>
+    </svg>
+  )
+};
+
+const Subtree = ({ node, leftBound, rightBound, parentCenter }) => {
+  if (!node) return null;
+  const x = getCenter(leftBound, rightBound);
+  const y = getNextYPosition(parentCenter);
+
+  return (
+    <svg>
+      <Node x={ x } y={ y } node={ node }/>
+      <RecursiveChild
+        node={ node.leftChild }
+        parentX={ x } parentY={ y }
+        childLeftbound={ leftBound }
+        childRightbound={ x }
+        direction={ LEFT }
+      />
+      <RecursiveChild
+        node={ node.rightChild }
+        parentX={ x } parentY={ y }
+        childLeftbound={ x }
+        childRightbound={ rightBound }
+        direction={ RIGHT }
+      />
     </svg>
   )
 };
@@ -83,12 +104,12 @@ class BinaryTree extends React.Component {
     return (
       <div style={ style.div }>
         <svg viewBox="0 0 100 100">
-          <RecursiveNodes node={ this.state.tree.root } leftBound={ 0 } rightBound={ 100 } parentY={ -5 }/>
+          <Subtree node={ this.state.tree.root } leftBound={ 0 } rightBound={ 100 } parentY={ -5 }/>
         </svg>
         <NodeInput enteredValue={ this.state.enteredValue } onInputChange={ this.changeEnteredValue } onButtonClick={ this.createNode }/>
       </div>
     )
   }
-}
+};
 
 export default BinaryTree;
