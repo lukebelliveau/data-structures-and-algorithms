@@ -65,8 +65,8 @@ const rootNode = tree.root;
 
 const RecursiveNodes = ({ node, leftBound, rightBound }) => {
   const center = getCenter(leftBound, rightBound);
-  const leftChildren = node.leftChild ? <RecursiveNodes node={ node.leftChild } leftBound={ leftBound } rightBound={ getCenter(leftBound, rightBound) } /> : null;
-  const rightChildren = node.rightChild ? <RecursiveNodes node={ node.rightChild } leftBound={ getCenter(leftBound, rightBound) } rightBound={ rightBound } /> : null;
+  const leftChildren = node.leftChild ? <RecursiveNodes node={ node.leftChild } leftBound={ leftBound } rightBound={ center } /> : null;
+  const rightChildren = node.rightChild ? <RecursiveNodes node={ node.rightChild } leftBound={ center } rightBound={ rightBound } /> : null;
 
   if(node.leftChild) {
     return (
