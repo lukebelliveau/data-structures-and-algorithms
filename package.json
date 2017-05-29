@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha-webpack --require source-map-support/register --webpack-config webpack.config-test.js \"test/**/*.test.js\"",
-    "test:watch": "mocha-webpack --require source-map-support/register --webpack-config webpack.config-test.js --watch \"test/**/*.test.js\""
+    "test:watch": "mocha-webpack --require source-map-support/register --webpack-config webpack.config-test.js --watch \"test/**/*.test.js\"",
+    "dev": "webpack-dev-server --hot --progress --colors --host 0.0.0.0 --port 3000"
   },
   "devDependencies": {
     "babel": "^6.23.0",
@@ -17,11 +18,17 @@
     "babel-loader": "^7.0.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
     "chai": "^4.0.0",
     "mocha": "^3.4.2",
     "mocha-webpack": "^0.7.0",
     "source-map-support": "^0.4.15",
     "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5",
     "webpack-node-externals": "^1.6.0"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
   }
 }
