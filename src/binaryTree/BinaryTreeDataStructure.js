@@ -25,6 +25,7 @@ export default class BinaryTree {
       return;
     }
 
+    if(node.data === parentNode.data) return;
     else if(node.data < parentNode.data) {
       parentNode.leftChild === null ?
         parentNode.leftChild = node :
@@ -53,7 +54,4 @@ export default class BinaryTree {
 
     return traversalString.slice(0, traversalString.length - 1);
   }
-
-}
-
-// export default BinaryTree;
+};
